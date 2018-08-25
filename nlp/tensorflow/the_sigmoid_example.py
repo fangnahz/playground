@@ -33,7 +33,7 @@ def the_sigmoid_example():
     # 6. 总厨拿到主厨做好交出的食物，交给服务员，服务员把食物送给顾客
     # 执行运算获得输出，immutable tensors，保存最终结果，以及中间结果
     h_eval = session.run(h, feed_dict={x: np.random.rand(1, 10)})
-    print(h_eval)
+    print('h_eval: %s' % h_eval)
 
 
 if __name__ == '__main__':
@@ -42,4 +42,5 @@ if __name__ == '__main__':
     # 3. session: 服务员
     #   3.1. 把客户点餐细节送到厨房，交给总厨（分布式 Master），总厨会分配任务给各个主厨、帮厨
     session = tf.InteractiveSession(graph=graph)
+    the_sigmoid_example()
     session.close()
