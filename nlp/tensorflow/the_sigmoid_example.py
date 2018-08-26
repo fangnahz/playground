@@ -1,6 +1,7 @@
 # coding: utf-8
-import tensorflow as tf
 import numpy as np
+import os
+import tensorflow as tf
 
 
 def the_sigmoid_example(W, b, session):
@@ -48,6 +49,71 @@ def sigmoid_preloaded(W, b, session):
     h_eval = session.run(h)  # 不需要提供 feed_dict 参数
     print('preloaded sigmoid: %s' % h_eval)
 
+
+def sigmoid_pipeline(W, b, session):
+    # input pipelines 用于快速处理大量数据
+    # 使用 queue 传递数据，支持预处理，支持并发
+    # 创建输入管道
+    filenames = ['test%d.txt' % i for i in range(1, 4)]
+    filename_queue = tf.train.string_input_producer(
+        filenames,
+        capacity=3,  # amount of data held in the queue at a given time
+        shuffle=True,  # shuffle data before spitting out
+        name='string_input_producer'
+    )
+    # 检查文件是否存在
+    for fn in filenames:
+        if not tf.gfile.Exists(fn):
+            raise ValueError('Failed to find file: ' + fn)
+        else:
+            print('File %s found.' % fn)
+    # 在几个文件中每行代表一条数据，使用 TextLineReader
+    reader = tf.TextLineReader()
+    # read() 方法输入是文件名 queue，从文件中读数据，逐个输出 key、value
+    #   key: 指明文件、当前读取的数据（行），这里不需要使用
+    #   value: 当前读到的行
+    _ignore_key, value = reader.read(filename_queue, name='text_read_op')
+    # record_defaults: 在读到错误数据时使用
+    record_defaults = [[-1.], [-1.], [-1.], [-1.], [-1.], [-1.], [-1.], [-1.], [-1.], [-1.]]
+    # 把读到的文本行数据解码成 columns，输入文本中每行有 10 列
+    col1, col2, col3, col4, col5, col6, col7, col8, col9, col10 = tf.decode_csv(
+        value,
+        record_defaults=record_defaults
+    )
+    # 合并上面得到的 10 个数据成一个 tensor，即 feature，包含全部 columns
+    featrues = tf.stack([col1, col2, col3, col4, col5, col6, col7, col8, col9, col10])
+    # shuffle_batch 方法随机 shuffle 上面得到的 feature，得到指定 size 的一个 batch 赋值给 x
+    # 数据从 .txt 文件中读取
+    x = tf.train.shuffle_batch(
+        [featrues],
+        batch_size=3,
+        capacity=5,
+        name='data_batch',
+        min_after_dequeue=1,
+        num_threads=1
+    )
+    # Coordinator 类可以视为 thread manager，比如可以使用多线程 enqueue，dequeue 等，
+    # 管理多个 QueueRunners
+    coord = tf.train.Coordinator()
+    # 自动创建 QueueRunner，从定义好的 queue 中获取数据，需要 explicitly 执行
+    threads = tf.train.start_queue_runners(coord=coord, sess=session)
+
+    h = tf.nn.sigmoid(tf.matmul(x, W) + b)
+
+    # 使用上面得到的 x 计算 h，打印出（5 步）执行的结果
+    for step in range(5):
+        x_eval, h_evla = session.run([x, h])
+        print('========== Setp %d =========='%step)
+        print('Evaluated data (x)')
+        print(x_eval)
+        print('Evaluated data (h)')
+        print(h_evla)
+        print('')
+
+    # 最后需要停止、join threads，否则会一直 hang 住
+    coord.request_stop()
+    coord.join(threads)
+
 if __name__ == '__main__':
     # 2. 服务员（session）会把客户点的餐记录在他的记事本，一个 tf.GraphDef 中
     graph = tf.Graph()
@@ -60,9 +126,12 @@ if __name__ == '__main__':
         shape=[10, 5], minval=-0.1, maxval=0.1, dtype=tf.float32), name='W'
     )
     b = tf.Variable(tf.zeros(shape=[5], dtype=tf.float32), name='b')
-    tf.global_variables_initializer().run()  # 初始化变量
+    # 初始化变量，在这个命令后如果再定义变量，就需要定义以后再次执行，否则变量在 operation 中不可用，会抛出异常:
+    #   FailedPreconditionError (see above for traceback): Attempting to use uninitialized value <var_name>
+    tf.global_variables_initializer().run()
 
     the_sigmoid_example(W, b, session)
     sigmoid_preloaded(W, b, session)
+    sigmoid_pipeline(W, b, session)
 
     session.close()
