@@ -36,7 +36,7 @@ if __name__ == '__main__':
         ],
         dtype=tf.int32
     )
-    print('x: %s\n' % x.eval().tolist())
+    print('\nx: %s' % x.eval().tolist())
     y = tf.constant(
         [
             [4, 3],
