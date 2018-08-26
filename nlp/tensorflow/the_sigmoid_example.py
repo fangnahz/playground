@@ -47,7 +47,7 @@ def sigmoid_preloaded(W, b, session):
     )
     h = tf.nn.sigmoid(tf.matmul(x, W) + b)
     h_eval = session.run(h)  # 不需要提供 feed_dict 参数
-    print('\npreloaded sigmoid: %s\n' % h_eval)
+    print('preloaded sigmoid: %s\n' % h_eval)
 
 
 def sigmoid_pipeline(W, b, session):
@@ -103,7 +103,7 @@ def sigmoid_pipeline(W, b, session):
     # 使用上面得到的 x 计算 h，打印出（5 步）执行的结果
     for step in range(5):
         x_eval, h_evla = session.run([x, h])
-        print('\n========== Setp %d ==========' % step)
+        print('========== Setp %d ==========' % step)
         print('Evaluated data (x)')
         print(x_eval)
         print('Evaluated data (h)')
