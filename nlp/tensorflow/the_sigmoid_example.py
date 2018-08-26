@@ -105,7 +105,7 @@ def sigmoid_pipeline(W, b, session):
 
     # 使用上面得到的 x 计算 h，打印出（5 步）执行的结果
     for step in range(5):
-        x_eval, h_evla = session.run([x, h])
+        x_eval, h_evla = session.run([x, h])  # 如果不指定 x，则 parameter server 不保存 x 结果，运算一样可以正常执行
         print('========== Setp %d ==========' % step)
         print('Evaluated data (x)')
         print(x_eval)
@@ -124,10 +124,24 @@ if __name__ == '__main__':
     session = tf.InteractiveSession(graph=graph)
 
     # variables: mutalbe tensors，算法中使用的变量
-    W = tf.Variable(tf.random_uniform(
-        shape=[10, 5], minval=-0.1, maxval=0.1, dtype=tf.float32), name='W'
+    W = tf.Variable(
+        tf.random_uniform(
+            shape=[10, 5],  # 每个纬度的 size，这个变量的长度是 tensor 的 rank，注意与矩阵 rank 概念的区别
+            minval=-0.1,
+            maxval=0.1,
+            dtype=tf.float32  # 运算中数据类型要保持一直，如果不一致需要 explicitly 使用 tf.cast 做类型转换
+                              # e.g.: tf.cast(x, dype=tf.float32)
+        ),  # 直接指定变量初始值
+        name='W'  # 是 Grpah 中变量的 ID，缺省则会使用 tensorflow 的默认命名 scheme
+                  # 如前所述，TensorFlow 的 Graph 不感知 python 框架中所使用的变量名
     )
-    b = tf.Variable(tf.zeros(shape=[5], dtype=tf.float32), name='b')
+    b = tf.Variable(
+        tf.zeros(
+            shape=[5],
+            dtype=tf.float32
+        ),  # 直接指定变量初始值
+        name='b'
+    )
     # 初始化变量，在这个命令后如果再定义变量，就需要定义以后再次执行，否则变量在 operation 中不可用，会抛出异常:
     #   FailedPreconditionError (see above for traceback): Attempting to use uninitialized value <var_name>
     tf.global_variables_initializer().run()
