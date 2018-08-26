@@ -1,6 +1,5 @@
 # coding: utf-8
 import numpy as np
-import os
 import tensorflow as tf
 
 
@@ -23,9 +22,11 @@ def the_sigmoid_example(W, b, session):
         name='x'  # 占位符名字，可选，在调试过程中使用
                   # tensorflow 不知道 python 框架中使用的变量名（上面的 x），只知道这里指定的名称
     )
+
     # 5. 主厨（operation executor）使用帮厨提供的材料根据顾客订单制作食物
     # operation: 使用输入、算法计算输出
     h = tf.nn.sigmoid(tf.matmul(x, W) + b)
+
     # 6. 总厨拿到主厨做好交出的食物，交给服务员，服务员把食物送给顾客
     # 执行运算获得输出，immutable tensors，保存最终结果，以及中间结果
     h_eval = session.run(
@@ -45,7 +46,9 @@ def sigmoid_preloaded(W, b, session):
         dtype=tf.float32,
         name='x'
     )
+
     h = tf.nn.sigmoid(tf.matmul(x, W) + b)
+
     h_eval = session.run(h)  # 不需要提供 feed_dict 参数
     print('preloaded sigmoid: %s\n' % h_eval)
 
