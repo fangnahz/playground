@@ -5,20 +5,11 @@ import tensorflow as tf
 # ReLU activation: max(0, x)
 # tf.nn.relu(x)
 
+
 # convolution:
 #   1. element-wise multiplication on image patch that overlaps filter
 #   2. sum
-def convolution_example(session):
-    x = tf.constant(
-        [[
-            [[1], [2], [3], [4]],
-            [[4], [3], [2], [1]],
-            [[5], [6], [7], [8]],
-            [[8], [7], [6], [5]]
-        ]],
-        dtype=tf.float32
-    )
-    print('\ninput:\n%s' % x.eval())
+def convolution(x, session):
     x_filter = tf.constant(
         [
             [
@@ -30,7 +21,7 @@ def convolution_example(session):
         ],
         dtype=tf.float32
     )
-    print('filter:\n%s' % x_filter.eval())
+    print('filter:\n%s' % x_filter.eval().tolist())
     x_strdie = [1, 1, 1, 1]
     x_padding = 'VALID'
     x_conv = tf.nn.conv2d(
@@ -52,9 +43,34 @@ def convolution_example(session):
     result = session.run(x_conv)
     return result
 
+
+# Pooling: similar to convolution, instead of sum of element-wise mulitplication, take the max element
+def pooling(x, session):
+    x_ksize = [1, 2, 2, 1]
+    x_strdie = [1, 2, 2, 1]
+    x_padding = 'VALID'
+    x_pool = tf.nn.max_pool(
+        value=x,
+        ksize=x_ksize,
+        strides=x_strdie,
+        padding=x_padding
+    )
+    result = session.run(x_pool)
+    return result
+
 if __name__ == '__main__':
     graph = tf.Graph()
     session = tf.InteractiveSession(graph=graph)
-    result = convolution_example(session)
-    print('convolution result:\n%s\n' % result)
+    x = tf.constant(
+        [[
+            [[1], [2], [3], [4]],
+            [[4], [3], [2], [1]],
+            [[5], [6], [7], [8]],
+            [[8], [7], [6], [5]]
+        ]],
+        dtype=tf.float32
+    )
+    print('\ninput:\n%s\n' % x.eval().tolist())
+    print('convolution:\n%s\n' % convolution(x, session).tolist())
+    print('pooling:\n%s\n' % pooling(x, session).tolist())
     session.close()
