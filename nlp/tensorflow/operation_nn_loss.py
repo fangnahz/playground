@@ -41,7 +41,7 @@ def cross_entropy(session):
         ],
         dtype=tf.float32
     )
-    print('\ny_hat:\n%s' % y_hat.eval())
+    print('y_hat:\n%s' % y_hat.eval())
     CE = tf.reduce_mean(  # needs to be explicitly called
         tf.nn.softmax_cross_entropy_with_logits_v2(  # Cross Entropy
             logits=y_hat,
