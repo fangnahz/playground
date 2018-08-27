@@ -125,10 +125,10 @@ def gather_nd_2(session):
 if __name__ == '__main__':
     graph = tf.Graph()
     session = tf.InteractiveSession(graph=graph)
-    print('scatter ref: %s\n' % scatter_update_1d(session).tolist())
+    print('scatter ref:\n%s\n' % scatter_update_1d(session).tolist())
     print('scatter:\n%s\n' % scatter_update_nd(session))
     print('scatter:\n%s\n' % scatter_update_nd_2(session))
-    print('gather 1d: %s\n' % gather_1d(session).tolist())
+    print('gather 1d:\n%s\n' % gather_1d(session).tolist())
     print('gather nd (rows):\n%s\n' % gather_nd(session))
     print('gather nd (elements):\n%s\n' % gather_nd_2(session).tolist())
     session.close()
