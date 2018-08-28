@@ -47,5 +47,5 @@ if __name__ == '__main__':
         zz1 = not_so_simple_computation(tf.constant(1.0, dtype=tf.float32))
         zz2 = another_not_so_simple_computation(z1)
     tf.global_variables_initializer().run()
-    assert session.run([z1, z2, a1, a2, zz1, zz2]) == 9, 90, 9, 90, 9, 90
+    assert tuple(session.run([z1, z2, a1, a2, zz1, zz2])) == (9, 90, 9, 90, 9, 90)
     session.close()
