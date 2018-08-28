@@ -21,7 +21,7 @@ if __name__ == '__main__':
     x = tf.Variable(tf.constant(2.0), name='x')
     tf.global_variables_initializer().run()
     wrong_answer = wrong_order(x, session)
-    print('\nexpects 14, get\n', wrong_answer)
+    print('\nexpects 14, gets\n', wrong_answer)
     right_anser = control_flow(x, session)
     print('\nusing tf.control_dependencies to control the operation flow, gives the right answer:\n', right_anser)
     session.close()
