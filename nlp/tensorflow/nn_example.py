@@ -104,6 +104,8 @@ def inference(x):
         tf_logits = tf.nn.bias_add(tf.matmul(tf_h2, w), b, name='logits')
     return tf_logits
 
+define_net_parameters()
+
 # defining the loss
 tf_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=inference(tf_inputs), labels=tf_lables))
 # defining the optimize function
