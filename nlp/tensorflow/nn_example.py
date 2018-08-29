@@ -33,6 +33,9 @@ def maybe_download(url, filename, expected_bytes, force=False):
         raise Exception('Failed to verify ' + filename + '. Can you get it with a browser?')
     return filename
 
+for filename, expected_bytes in (files_train + files_test):
+    maybe_download(url, filename, expected_bytes)
+
 
 def read_mnist(fname_img, fname_lbl):
     print('\nReading files %s and %s' % (fname_img, fname_lbl))
