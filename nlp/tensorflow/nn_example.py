@@ -154,7 +154,6 @@ for epoch in range(NUM_EPOCHS):
         test_predictions = session.run(tf_predictions, feed_dict={tf_inputs: test_inputs[step*batch_size: (step+1)*batch_size, :]})
         batch_test_accuracy = accuracy(test_predictions, test_lables[step*batch_size: (step+1)*batch_size])
         test_accuracy.append(batch_test_accuracy)
-
     print('Averageg train loss for the %d epoch: %.3f\n' % (epoch+1, np.mean(train_loss)))
     train_loss_over_time.append(np.mean(train_loss))
     print('\tAverage test accuracy for the %d epoch: %.2f\n' % (epoch+1, np.mean(test_accuracy)*100.0))
@@ -164,7 +163,7 @@ session.close()
 
 # Visualizing the loss and accuracy
 x_axis = np.arange(len(train_loss_over_time))
-fig, ax = plt.subplots(nrows=1, nclos=2)
+fig, ax = plt.subplots(nrows=1, ncols=2)
 fig.set_size_inches(w=25, h=5)
 ax[0].plot(x_axis, train_loss_over_time)
 ax[0].set_xlabel('Epochs', fontsize=18)
