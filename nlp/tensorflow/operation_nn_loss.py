@@ -18,7 +18,7 @@ def mean_squared_error():
         ],
         dtype=tf.float32
     )
-    print('\nx_hat:\n%s' % x_hat.eval())
+    print('x_hat:\n%s' % x_hat.eval())
     MSE = tf.nn.l2_loss(x - x_hat)  # Mean Squared Error
     return MSE
 
