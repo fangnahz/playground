@@ -4,7 +4,7 @@
 import tensorflow as tf
 
 
-def scatter_update_1d(session):
+def scatter_update_1d():
     ref = tf.Variable(
         tf.constant(
             [1, 9, 3, 10, 5],
@@ -12,9 +12,9 @@ def scatter_update_1d(session):
         ),
         name='scatter_update'
     )
+    print('\nScatter update operation for 1-D')
     tf.global_variables_initializer().run()
     print('\nref: %s' % ref.eval().tolist())
-    print('# 1d element update')
     indices = [1, 3]
     print('indices: %s' % indices)
     updates = tf.constant(
@@ -29,13 +29,12 @@ def scatter_update_1d(session):
         use_locking=None,
         name=None
     )
-    result = session.run(tf_scatter_update)
-    return result
+    return tf_scatter_update
 
 
-def scatter_update_nd(session):
-    print('# initially zeros')
-    print('# nd row update')
+def scatter_update_nd():
+    print('# Initially zeros')
+    print('Scatter row update operation for n-D')
     indices = [[1], [3]]
     print('indices: %s' % indices)
     updates = tf.constant([[1, 1, 1], [2, 2, 2]])
@@ -48,13 +47,12 @@ def scatter_update_nd(session):
         shape,
         name=None
     )
-    result = session.run(tf_scatter_update_nd)
-    return result
+    return tf_scatter_update_nd
 
 
-def scatter_update_nd_2(session):
+def scatter_update_nd_2():
     print('# initially zeros')
-    print('# nd element update')
+    print('Scatter element update operation for n-D')
     indices = [[1, 0], [3, 1]]  # 2 x 2
     print('indices: %s' % indices)
     updates = tf.constant([1, 2])  # 2 x 1
@@ -62,12 +60,11 @@ def scatter_update_nd_2(session):
     shape = [4, 3]
     print('shape: %s' % shape)
     tf_scatter_update_nd = tf.scatter_nd(indices, updates, shape)
-    result = session.run(tf_scatter_update_nd)
-    return result
+    return tf_scatter_update_nd
 
 
-def gather_1d(session):
-    print('# 1d element access')
+def gather_1d():
+    print('Gather operation for 1-D, access element')
     params = tf.constant(
         [1, 2, 3, 4, 5],
         dtype=tf.float32
@@ -81,12 +78,11 @@ def gather_1d(session):
         validate_indices=True,
         name=None
     )
-    result = session.run(tf_gather)
-    return result
+    return tf_gather
 
 
-def gather_nd(session):
-    print('# nd slice (row) access')
+def gather_nd():
+    print('Gather operation for n-D, slice (row) access')
     params = tf.constant(
         [
             [0, 0, 0],
@@ -100,12 +96,11 @@ def gather_nd(session):
     indices = [[0], [2]]
     print('indices: %s' % indices)
     tf_gather_nd = tf.gather_nd(params, indices, name=None)
-    result = session.run(tf_gather_nd)
-    return result
+    return tf_gather_nd
 
 
-def gather_nd_2(session):
-    print('# nd element access')
+def gather_nd_2():
+    print('Gather operation for n-D, element access')
     params = tf.constant(
         [
             [0, 0, 0],
@@ -119,16 +114,15 @@ def gather_nd_2(session):
     indices = [[0, 1], [2, 2]]
     print('indices: %s' % indices)
     tf_gather_nd = tf.gather_nd(params, indices)
-    result = session.run(tf_gather_nd)
-    return result
+    return tf_gather_nd
 
 if __name__ == '__main__':
     graph = tf.Graph()
     session = tf.InteractiveSession(graph=graph)
-    print('scatter ref:\n%s\n' % scatter_update_1d(session).tolist())
-    print('scatter:\n%s\n' % scatter_update_nd(session))
-    print('scatter:\n%s\n' % scatter_update_nd_2(session))
-    print('gather 1d:\n%s\n' % gather_1d(session).tolist())
-    print('gather nd (rows):\n%s\n' % gather_nd(session))
-    print('gather nd (elements):\n%s\n' % gather_nd_2(session).tolist())
+    print('updated:\n%s\n' % session.run(scatter_update_1d()).tolist())
+    print('updated:\n%s\n' % session.run(scatter_update_nd()))
+    print('updated:\n%s\n' % session.run(scatter_update_nd_2()))
+    print('gather 1-D element:\n%s\n' % session.run(gather_1d().tolist()))
+    print('gather n-D rows:\n%s\n' % session.run(gather_nd()))
+    print('gather n-D elements:\n%s\n' % gather_nd_2(session).tolist())
     session.close()
