@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 
-def mean_squared_error(session):
+def mean_squared_error():
     print('\nMean Squeared Error')
     x = tf.constant(
         [
@@ -20,11 +20,10 @@ def mean_squared_error(session):
     )
     print('\nx_hat:\n%s' % x_hat.eval())
     MSE = tf.nn.l2_loss(x - x_hat)  # Mean Squared Error
-    result = session.run(MSE)
-    return result
+    return MSE
 
 
-def cross_entropy(session):
+def cross_entropy():
     print('\nCross Entropy')
     y = tf.constant(
         [
@@ -48,12 +47,11 @@ def cross_entropy(session):
             labels=y
         )
     )
-    result = session.run(CE)
-    return result
+    return CE
 
 if __name__ == '__main__':
     graph = tf.Graph()
     session = tf.InteractiveSession(graph=graph)
-    print('MSE: %s\n' % mean_squared_error(session))
-    print('CE: %s\n' % cross_entropy(session))
+    print('MSE: %s\n' % session.run(mean_squared_error()))
+    print('CE: %s\n' % session.run(cross_entropy()))
     session.close()
