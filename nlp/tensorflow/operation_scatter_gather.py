@@ -124,5 +124,5 @@ if __name__ == '__main__':
     print('updated:\n%s\n' % session.run(scatter_update_nd_2()))
     print('gather 1-D element:\n%s\n' % session.run(gather_1d().tolist()))
     print('gather n-D rows:\n%s\n' % session.run(gather_nd()))
-    print('gather n-D elements:\n%s\n' % gather_nd_2(session).tolist())
+    print('gather n-D elements:\n%s\n' % gather_nd_2(session))
     session.close()
