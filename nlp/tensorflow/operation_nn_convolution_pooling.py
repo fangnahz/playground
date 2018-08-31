@@ -9,7 +9,7 @@ import tensorflow as tf
 # convolution:
 #   1. element-wise multiplication on image patch that overlaps filter
 #   2. sum
-def convolution(x, session):
+def convolution(x):
     x_filter = tf.constant(
         [
             [
@@ -40,12 +40,11 @@ def convolution(x, session):
                            # 'VALID': no paddings, output smaller than input, (n - h + 1)
                            # 'SAME': zero paddings, output is of the same size as input
     )
-    result = session.run(x_conv)
-    return result
+    return x_conv
 
 
 # Pooling: similar to convolution, instead of sum of element-wise mulitplication, take the max element
-def pooling(x, session):
+def pooling(x):
     x_ksize = [1, 2, 2, 1]
     x_strdie = [1, 2, 2, 1]
     x_padding = 'VALID'
@@ -55,8 +54,7 @@ def pooling(x, session):
         strides=x_strdie,
         padding=x_padding
     )
-    result = session.run(x_pool)
-    return result
+    return x_pool
 
 if __name__ == '__main__':
     graph = tf.Graph()
@@ -71,6 +69,6 @@ if __name__ == '__main__':
         dtype=tf.float32
     )
     print('\ninput:\n%s\n' % x.eval().tolist())
-    print('convolution:\n%s\n' % convolution(x, session).tolist())
-    print('pooling:\n%s\n' % pooling(x, session).tolist())
+    print('2-D convolution:\n%s\n' % session.run(convolution(x)).tolist())
+    print('Max pooling:\n%s\n' % session.run(pooling(x)).tolist())
     session.close()
